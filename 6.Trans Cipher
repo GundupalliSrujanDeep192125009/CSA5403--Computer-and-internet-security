@@ -1,0 +1,47 @@
+import java.util.*;
+
+class TransCipher {
+    public static void main(String args[]) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter the plain text:");
+        String pl = sc.nextLine();
+        sc.close();
+
+        // Remove spaces
+        String s = pl.replaceAll(" ", "");
+        System.out.println("Text after space removal: " + s);
+
+        // Define key size
+        int col = 4;
+        int row = (int) Math.ceil((double) s.length() / col);
+
+        // Create matrix and fill with characters
+        char[][] ch = new char[row][col];
+        int k = 0;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                if (k < s.length()) {
+                    ch[i][j] = s.charAt(k++);
+                } else {
+                    ch[i][j] = '#'; // Padding character
+                }
+            }
+        }
+
+        // Display the matrix
+        System.out.println("\nMatrix Representation:");
+        for (char[] rowArr : ch) {
+            System.out.println(Arrays.toString(rowArr));
+        }
+
+        // Transpose the matrix & construct the ciphertext
+        StringBuilder cipherText = new StringBuilder();
+        for (int j = 0; j < col; j++) {
+            for (int i = 0; i < row; i++) {
+                cipherText.append(ch[i][j]);
+            }
+        }
+
+        System.out.println("\nEncrypted Message: " + cipherText.toString());
+    }
+}
