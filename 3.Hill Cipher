@@ -1,0 +1,83 @@
+class HillCipher {
+    /* 3x3 key matrix for encryption */
+    public static int[][] keymat = {
+            { 1, 2, 1 },
+            { 2, 3, 2 },
+            { 2, 2, 1 }
+    };
+
+    /* Inverse key matrix for decryption */
+    public static int[][] invkeymat = {
+            { -1, 0, 1 },
+            { 2, -1, 0 },
+            { -2, 2, -1 }
+    };
+
+    public static String key = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    private static String encode(char a, char b, char c) {
+        int posa = a - 'A';
+        int posb = b - 'A';
+        int posc = c - 'A';
+
+        int x = posa * keymat[0][0] + posb * keymat[1][0] + posc * keymat[2][0];
+        int y = posa * keymat[0][1] + posb * keymat[1][1] + posc * keymat[2][1];
+        int z = posa * keymat[0][2] + posb * keymat[1][2] + posc * keymat[2][2];
+
+        a = key.charAt(x % 26);
+        b = key.charAt(y % 26);
+        c = key.charAt(z % 26);
+
+        return "" + a + b + c;
+    }
+
+    private static String decode(char a, char b, char c) {
+        int posa = a - 'A';
+        int posb = b - 'A';
+        int posc = c - 'A';
+
+        int x = posa * invkeymat[0][0] + posb * invkeymat[1][0] + posc * invkeymat[2][0];
+        int y = posa * invkeymat[0][1] + posb * invkeymat[1][1] + posc * invkeymat[2][1];
+        int z = posa * invkeymat[0][2] + posb * invkeymat[1][2] + posc * invkeymat[2][2];
+
+        a = key.charAt((x % 26 + 26) % 26);
+        b = key.charAt((y % 26 + 26) % 26);
+        c = key.charAt((z % 26 + 26) % 26);
+
+        return "" + a + b + c;
+    }
+
+    public static void main(String[] args) {
+        String msg = "SecurityLaboratory";
+        System.out.println("Simulation of Hill Cipher\n-------------------------");
+        System.out.println("Input Message: " + msg);
+
+        msg = msg.toUpperCase().replaceAll("\\s", ""); // Remove spaces
+        int n = msg.length() % 3;
+
+        // Append padding 'X' if needed
+        if (n != 0) {
+            for (int i = 0; i < (3 - n); i++) {
+                msg += 'X';
+            }
+        }
+
+        System.out.println("Padded Message: " + msg);
+
+        StringBuilder enc = new StringBuilder();
+        char[] pdchars = msg.toCharArray();
+        for (int i = 0; i < msg.length(); i += 3) {
+            enc.append(encode(pdchars[i], pdchars[i + 1], pdchars[i + 2]));
+        }
+
+        System.out.println("Encoded Message: " + enc);
+
+        StringBuilder dec = new StringBuilder();
+        char[] dechars = enc.toString().toCharArray();
+        for (int i = 0; i < enc.length(); i += 3) {
+            dec.append(decode(dechars[i], dechars[i + 1], dechars[i + 2]));
+        }
+
+        System.out.println("Decoded Message: " + dec);
+    }
+}
