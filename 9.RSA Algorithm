@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RSA Encryption</title>
+</head>
+<body>
+<center>
+    <h1>RSA Algorithm</h1>
+    <h2>Implemented Using HTML & JavaScript</h2>
+    <hr>
+    <table>
+        <tr>
+            <td>Enter First Prime Number:</td>
+            <td><input type="number" value="53" id="p"></td>
+        </tr>
+        <tr>
+            <td>Enter Second Prime Number:</td>
+            <td><input type="number" value="59" id="q"></td>
+        </tr>
+        <tr>
+            <td>Enter the Message (Cipher Text):<br>[A=1, B=2,...]</td>
+            <td><input type="number" value="89" id="msg"></td>
+        </tr>
+        <tr>
+            <td>Public Key (n):</td>
+            <td><p id="publickey"></p></td>
+        </tr>
+        <tr>
+            <td>Exponent (e):</td>
+            <td><p id="exponent"></p></td>
+        </tr>
+        <tr>
+            <td>Private Key (d):</td>
+            <td><p id="privatekey"></p></td>
+        </tr>
+        <tr>
+            <td>Cipher Text:</td>
+            <td><p id="ciphertext"></p></td>
+        </tr>
+        <tr>
+            <td>Decrypted Text:</td>
+            <td><p id="decrypted"></p></td>
+        </tr>
+        <tr>
+            <td><button onclick="RSA();">Apply RSA</button></td>
+        </tr>
+    </table>
+</center>
+
+<script>
+        function gcd(a, b) {
+            return b === 0 ? a : gcd(b, a % b);
+        }
+
+        function modInverse(e, phi) {
+            let m0 = phi, t, q;
+            let x0 = 0, x1 = 1;
+            if (phi === 1) return 0;
+
+            while (e > 1) {
+                q = Math.floor(e / phi);
+                t = phi;
+                phi = e % phi;
+                e = t;
+                t = x0;
+                x0 = x1 - q * x0;
+                x1 = t;
+            }
+            return x1 < 0 ? x1 + m0 : x1;
+        }
+
+        function modExp(base, exp, mod) {
+            let result = 1n;
+            base = base % mod;
+            while (exp > 0) {
+                if (exp % 2n === 1n) result = (result * base) % mod;
+                exp = exp / 2n;
+                base = (base * base) % mod;
+            }
+            return result;
+        }
+
+        function RSA() {
+            let p = BigInt(document.getElementById('p').value);
+            let q = BigInt(document.getElementById('q').value);
+            let msg = BigInt(document.getElementById('msg').value);
+
+            let n = p * q;
+            let phi = (p - 1n) * (q - 1n);
+
+            let e;
+            for (e = 2n; e < phi; e++) {
+                if (gcd(Number(e), Number(phi)) === 1) break;
+            }
+
+            let d = BigInt(modInverse(Number(e), Number(phi)));
+
+            let cipherText = modExp(msg, e, n);
+            let decryptedText = modExp(cipherText, d, n);
+
+            document.getElementById('publickey').innerText = n;
+            document.getElementById('exponent').innerText = e;
+            document.getElementById('privatekey').innerText = d;
+            document.getElementById('ciphertext').innerText = cipherText;
+            document.getElementById('decrypted').innerText = decryptedText;
+        }
+    </script>
+</body>
+</html>
+
+
