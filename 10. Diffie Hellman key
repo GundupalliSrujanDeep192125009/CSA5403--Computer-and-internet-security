@@ -1,0 +1,38 @@
+import java.math.BigInteger;
+
+class DiffieHellman {
+    public static void main(String args[]) {
+        BigInteger p = BigInteger.valueOf(23); // Public prime number
+        BigInteger g = BigInteger.valueOf(5);  // Public primitive root
+
+        BigInteger x = BigInteger.valueOf(4);  // Alice's secret
+        BigInteger y = BigInteger.valueOf(3);  // Bob's secret
+
+        // Alice calculates A = g^x mod p
+        BigInteger aliceSends = g.modPow(x, p);
+        // Bob calculates B = g^y mod p
+        BigInteger bobSends = g.modPow(y, p);
+
+        // Bob computes shared secret: (A^y mod p)
+        BigInteger bobComputes = aliceSends.modPow(y, p);
+        // Alice computes shared secret: (B^x mod p)
+        BigInteger aliceComputes = bobSends.modPow(x, p);
+
+        System.out.println("Simulation of Diffie-Hellman Key Exchange Algorithm");
+        System.out.println("---------------------------------------------------");
+        System.out.println("Public Prime (p)       : " + p);
+        System.out.println("Public Base (g)        : " + g);
+        System.out.println("Alice's Secret (x)     : " + x);
+        System.out.println("Bob's Secret (y)       : " + y);
+        System.out.println("Alice Sends (A = g^x mod p) : " + aliceSends);
+        System.out.println("Bob Sends (B = g^y mod p)   : " + bobSends);
+        System.out.println("Bob Computes Shared Secret  : " + bobComputes);
+        System.out.println("Alice Computes Shared Secret: " + aliceComputes);
+        // Check if both computed shared secrets match
+        if (aliceComputes.equals(bobComputes)) {
+            System.out.println("Success: Shared Secret Matches! " + aliceComputes);
+        } else {
+            System.out.println("Error: Shared Secret does not match!");
+        }
+    }
+}
